@@ -1,11 +1,14 @@
 package com.rx.rxandroidnotes
 
 import android.os.Bundle
+import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import io.reactivex.BackpressureStrategy
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
+import timber.log.Timber
 
 class MainActivity : AppCompatActivity() {
 
@@ -13,8 +16,21 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val views = arrayOf(tvMissing, tvDrop, tvLatest, tvBuffer, tvError, button)
+
+
+        checkBox.setOnClickListener {
+            views.forEach {
+                if (checkBox.isChecked) {
+                    it.visibility = View.VISIBLE
+                } else {
+                    it.visibility = View.GONE
+                }
+            }
+        }
+
         button.setOnClickListener {
-            val missing = setBackpressureStrategy(BackpressureStrategy.MISSING)
+            val missing = setBackpressureStrategy(BackpressureStrategy.MISSING, TEST_VALUE_MILLION)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
@@ -24,7 +40,7 @@ class MainActivity : AppCompatActivity() {
                         tvMissing.text = it.message
                     })
 
-            val drop = setBackpressureStrategy(BackpressureStrategy.DROP)
+            val drop = setBackpressureStrategy(BackpressureStrategy.DROP, TEST_VALUE_MILLION)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
@@ -34,7 +50,7 @@ class MainActivity : AppCompatActivity() {
                         tvDrop.text = it.message
                     })
 
-            val latest = setBackpressureStrategy(BackpressureStrategy.LATEST)
+            val latest = setBackpressureStrategy(BackpressureStrategy.LATEST, TEST_VALUE_MILLION)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
@@ -45,7 +61,7 @@ class MainActivity : AppCompatActivity() {
                     })
 
 
-            val buffer = setBackpressureStrategy(BackpressureStrategy.BUFFER)
+            val buffer = setBackpressureStrategy(BackpressureStrategy.BUFFER, 100000)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
@@ -55,7 +71,7 @@ class MainActivity : AppCompatActivity() {
                         tvBuffer.text = it.message
                     })
 
-            val error = setBackpressureStrategy(BackpressureStrategy.ERROR)
+            val error = setBackpressureStrategy(BackpressureStrategy.ERROR, TEST_VALUE_MILLION)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
@@ -65,5 +81,21 @@ class MainActivity : AppCompatActivity() {
                         tvError.text = it.message
                     })
         }
+
+        val disposableExample = disposable(this, 500, "Result")
+
+        android.os.Handler().postDelayed({
+            disposableExample.dispose()
+            if (disposableExample.isDisposed) {
+                Toast.makeText(this, "isDisposed", Toast.LENGTH_SHORT).show()
+                Timber.d("isDisposed")
+            }
+        }, 2000)
+
+    }
+
+    companion object {
+        val TAG = MainActivity::class.java.simpleName
+        const val TEST_VALUE_MILLION = 1000000
     }
 }
