@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:layout_marginTop="20dp"
     android:layout_marginBottom="20dp"
-    tools:context=".MainActivity">
+    tools:context=".rxjava2.MainActivity">
 
     <TextView
         android:id="@+id/tvMissing"
