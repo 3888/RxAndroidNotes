@@ -26,9 +26,10 @@ class MainActivity : AppCompatActivity() {
 
         initViews()
 
-        //        disposeBag.add(disposableDelayExample(this, 1000, "Hey"))
+//        disposeBag.add(disposableDelayExample(this, 1000, "Hey"))
 //        disposeBag.add(flatMapDoesNotGuaranteeTheOrderOfTheItems())
 //        disposeBag.add(concatMapGuaranteeTheOrderOfTheItems())
+        disposeBag.add(zipWith())
     }
 
     override fun onDestroy() {

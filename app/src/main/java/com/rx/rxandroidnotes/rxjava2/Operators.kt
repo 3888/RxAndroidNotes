@@ -5,6 +5,7 @@ import android.widget.Toast
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
+import io.reactivex.functions.BiFunction
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
@@ -53,3 +54,18 @@ fun disposableDelayExample(context: Context, delayMillis: Long, message: String)
                 println(it)
             }
         )
+
+fun zipWith(): Disposable {
+        val chars = Observable.just("A", "B", "C", "D", "NO PAIR FOR THIS VALUE")
+        val numbers = Observable.just(1, 2, 3, 4)
+
+    return  numbers.zipWith(chars,
+        BiFunction<Int, String, String> { t1, t2 ->
+                "$t1 $t2"
+        })
+        .subscribe({
+            Timber.tag("Rx").d(it)
+        }, {
+
+        })
+}
